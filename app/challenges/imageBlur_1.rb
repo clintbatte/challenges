@@ -8,11 +8,10 @@ class Image
         @image.each do |item|
             puts item.join(", ")
         end
-        return
     end
     
     def output_image
-        puts iterate_array
+        iterate_array
     end
 end
 
