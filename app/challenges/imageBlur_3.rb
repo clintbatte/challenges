@@ -4,6 +4,7 @@ class Image
     @image = image
     @pixel = Marshal.load(Marshal.dump(@image))
     @coordinates = []
+    @image2 = []
   end
 
   def iterate_array
@@ -26,10 +27,10 @@ class Image
 
           next unless x == row_index && y == column_index
 
-          @pixel[row_index - 1][column_index] = 1 unless row_index.zero? # count up
           @pixel[row_index + 1][column_index] = 1 unless row_index >= @height # count down
+          @pixel[row_index - 1][column_index] = 1 unless row_index.zero? # count up
           @pixel[row_index][column_index - 1] = 1 unless column_index.zero? # count left
-          @pixel[row_index][column_index + 1] = 1 unless column_index >= @width - 1 # count right
+          @pixel[row_index][column_index + 1] = 1 unless column_index >= @width - 2 # count right
         end
       end
     end
@@ -37,6 +38,8 @@ class Image
     @pixel.each do |row|
       puts row.join
     end
+    @image2 << @pixel.inspect
+    puts @image2
   end
 
   def output_image
@@ -44,10 +47,23 @@ class Image
   end
 end
 
+
 image_array = [[0, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, 1], [0, 0, 0, 0]]
 image = Image.new(image_array)
 image.output_image
 image.blur_cell
+
+puts "======================"
+
+
+# @imageArray = [[0, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, 1], [0, 0, 0, 0]]
+# image = Image.new(@imageArray)
+# image.output_image
+# image.blur_cell
+#
+
+
+
 
 # ===============================================
 #  experiments
