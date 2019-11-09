@@ -1,74 +1,46 @@
-class Image_blur_one
-
-  def initialize(image_one)
-    @image_one = image_one
-    @pixel = Marshal.load(Marshal.dump(@image_one))
+class Image
+  def initialize(image)
+    @image = image
+    @pixel = Marshal.load(Marshal.dump(@image))
     @coordinates = []
     @image_blur = []
   end
 
-  # def iterate_array
-  #   @pixel.each_with_index do |row, row_index|
-  #     row.each_with_index do |cell, column_index|
-  #       @coordinates << [row_index, column_index] if cell == 1
-  #     end
-  #   end
-  #   puts @pixel.inspect
-  #   puts @coordinates.inspect
-  # end
-
-  def blur_cell
+  def get_cell
     @coordinates = []
     @pixel.each_with_index do |row, row_index|
       row.each_with_index do |cell, column_index|
         @coordinates << [row_index, column_index] if cell == 1
       end
     end
+    @coordinates.each do |x, y|
+      # @width = @pixel[0].count
+      # @height = @pixel.count
 
-    @pixel.each_with_index do |row, row_index|
-      row.each_with_index do |_cell, column_index|
-        @coordinates.each do |x, y|
-
-          @width = @pixel[0].count
-          @height = @pixel.count
-
-          next unless x == row_index && y == column_index
-
-          @pixel[x + 1][y] = 1 unless row_index >= @height # count down
-          @pixel[x - 1][y] = 1 unless row_index.zero? # count up
-          @pixel[x][y - 1] = 1 unless column_index.zero? # count left
-          unless column_index >= @width - 2
-            @pixel[x][y + 1] = 1
-          end
-        end
-      end
+      @pixel[x][y + 1] = 1 if y + 1 <= @pixel.length - 1
+      @pixel[x][y - 1] = 1 if y - 1 >= 0
+      @pixel[x + 1][y] = 1 if x + 1 <= @pixel.length - 1
+      @pixel[x - 1][y] = 1 if x - 1 >= 0
     end
-
+    puts "================= the blurred image output ==================="
     @pixel.each do |row|
       puts row.join
     end
     @image_blur << @pixel.inspect
+    puts "=============== grouping back into an array =================="
     puts @image_blur
+    puts ""
   end
 
   def blur(distance)
     distance.times do
-      blur_cell
+      get_cell
     end
-  end
-
-  def output_image_one
-    iterate_array
-  end
-
-  def output_image_one_array
-    blur_cell
   end
 end
 
 
 image_array = [[0, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, 1], [0, 0, 0, 0]]
-image_one = Image_blur_one.new(image_array)
-# image_one.output_image_one
-image_one.blur(3)
+image = Image.new(image_array)
+image.blur(3)
 
