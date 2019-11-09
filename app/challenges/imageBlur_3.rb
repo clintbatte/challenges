@@ -30,7 +30,9 @@ class Image_blur_one
           @pixel[row_index + 1][column_index] = 1 unless row_index >= @height # count down
           @pixel[row_index - 1][column_index] = 1 unless row_index.zero? # count up
           @pixel[row_index][column_index - 1] = 1 unless column_index.zero? # count left
-          @pixel[row_index][column_index + 1] = 1 unless column_index >= @width - 2 # count right
+          unless column_index >= @width - 2
+            @pixel[row_index][column_index + 1] = 1
+          end # count right
         end
       end
     end
@@ -52,54 +54,64 @@ class Image_blur_one
 end
 
 
+class Image_blur
 
-class Image_blur_two
-
-  def initialize(image_two)
-    @image_two = image_two
-    @pixel_two = Marshal.load(Marshal.dump(@image_two))
+  def initialize(image)
+    @image = image
+    @pixels = Marshal.load(Marshal.dump(@image))
     @coordinates = []
-    @image_blur_two = []
+    @blur_array = []
   end
 
-  def iterate_array_two
-    @pixel_two.each_with_index do |row, row_index|
+  def find_ones
+    @pixels.each_with_index do |row, row_index|
       row.each_with_index do |cell, column_index|
         @coordinates << [row_index, column_index] if cell == 1
       end
     end
-    puts @pixel_two.inspect
+    puts @pixels.inspect
     puts @coordinates.inspect
   end
 
-  def blur_cell_two
-    @pixel_two.each_with_index do |row, row_index|
-      row.each_with_index do |_cell, column_index|
-        @coordinates.each do |x, y|
+  def manhattan_distance (x1, x2, y1, y2)
+    horizontal_distance = (x1 - x2).abs
+    vertical_distance = (y1 - y2).abs
+    horizontal_distance + vertical_distance
+  end
 
-          @width = @pixel_two[0].count
-          @height = @pixel_two.count
+  def blur_cells(blur_num)
+    @pixels.each_with_index do |row, row_index|
+      row.each_with_index do |cell, column_index|
+        @coordinates.each do |found_row_index, found_column_index|
+          if manhattan_distance(column_index, row_index, found_row_index, found_column_index) <= blur_num
+            @pixels[row_index][column_index] = 1
+          end
+
+          @width = @pixels[0].count
+          @height = @pixels.count
 
           next unless x == row_index && y == column_index
 
-          @pixel_two[row_index + 1][column_index] = 1 unless row_index >= @height # count down
-          @pixel_two[row_index - 1][column_index] = 1 unless row_index.zero? # count up
-          @pixel_two[row_index][column_index - 1] = 1 unless column_index.zero? # count left
-          @pixel_two[row_index][column_index + 1] = 1 unless column_index >= @width - 2 # count right
+          @pixels[row_index + 1][column_index] = n unless row_index >= @height # count down
+          @pixels[row_index - 1][column_index] = n unless row_index.zero? # count up
+          @pixels[row_index][column_index - 1] = n unless column_index.zero? # count left
+          unless column_index >= @width - 2
+            @pixels[row_index][column_index + 1] = n
+          end # count right
         end
       end
     end
-
-    @pixel_two.each do |row|
+    @pixels.each do |row|
       puts row.join
     end
-    @image_blur_two << @pixel_two.inspect
-    puts @image_blur_two
+    @blur_array << @pixels.inspect
+    puts @blur_array
   end
 
-  def output_image_two
-    iterate_array_two
+  def output_new_image
+    find_ones
   end
+
 end
 
 
@@ -110,11 +122,10 @@ image_one.blur_cell
 
 puts "======================"
 
-image_array_two = [[0, 1, 0, 0], [1, 1, 1, 1], [0, 1, 1, 1], [0, 0, 0, 1]]
-image_two = Image_blur_two.new(image_array_two)
-image_two.output_image_two
-image_two.blur_cell_two
-
+image_array2 = [[0, 1, 0, 0], [1, 1, 1, 1], [0, 1, 1, 1], [0, 0, 0, 1]]
+image_blur = Image_blur.new(image_array2)
+image_blur.output_new_image
+image_blur.blur_cells(3)
 
 
 # def blur_cell_two
