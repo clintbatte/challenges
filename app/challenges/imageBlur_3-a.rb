@@ -2,7 +2,6 @@ class Image
   def initialize(image)
     @image = image
     @pixel = Marshal.load(Marshal.dump(@image))
-    @coordinates = []
     @image_blur = []
   end
 
