@@ -11,9 +11,10 @@ class ListNode
   # Assign next to be nothing since we are adding to the end of the linked list
   def initialize(value, nextVal = nil)
     @value = value
-    #the reference to the next node will be nil unless we assign it
+    # the reference to the next node will be nil unless we assign it
     @next = nextVal
   end
+
   # method to print out node values
   def print
     "Node with value: #{@value}"
@@ -21,12 +22,14 @@ class ListNode
 end
 # TODO: simplify this code it is somewhat difficult to read. while loops are confusing
 # More granular way to learn this?
+#
 class SinglyLinkedList
   # Create a brand new list which will be empty, hence the head is nil
   attr_accessor :head
   def initialize
     @head = nil
   end
+
   def append(value)
     if @head
       find_tail.next = ListNode.new(value)
@@ -34,21 +37,22 @@ class SinglyLinkedList
       @head = ListNode.new(value)
     end
   end
+
   # Find the end of the list
   def find_tail
     # start from the head of the list (remember we can only start at the beginning we cannot pick and choose an index like an array)
     current_node = @head
     # if there is only the head (1 node) then we want to return that
-    return current_node if !current_node.next
+    return current_node unless current_node.next
+
     # if there are any nodes following the head of the list then we want to iterate through the nodes of the list...
     # ... and return the very last one
     # while node.next != nil, node will continue to reassign itself to the next node in the list
     # once node.next = nil we know that we are at the tail of the list. Now we return that node
-    while current_node.next != nil
-      current_node = current_node.next
-    end
-    return current_node
+    current_node = current_node.next until current_node.next.nil?
+    current_node
   end
+
   def print
     current_node = @head
     puts current_node.value

@@ -7,6 +7,14 @@ class LinkedListNode
   end
 end
 
+def reverse_list(list, previous=nil)
+  if list
+    next_node = list.next_node
+    list.next_node = previous
+    reverse_list(next_node, list)
+  end
+end
+
 def print_values(list_node)
   if list_node
     print "#{list_node.value} --> "
@@ -16,41 +24,15 @@ def print_values(list_node)
   end
 end
 
-
-class Stack
-  attr_accessor :data
-
-  def initialize
-    @data = nil
-  end
-
-  def push(value)
-    @data = LinkedListNode.new(value, @data)
-  end
-
-  def pop
-    return print "nil\n" if @data.nil?
-
-    print "#{@data.value}\n"
-    @data = @data.next_node
-  end
-end
-
-
-def reverse_list(list)
-  stack = Stack.new
-  while list
-    stack.push(list.value)
-    list = list.next_node
-  end
-  stack.data
-end
-
 node1 = LinkedListNode.new(37)
 node2 = LinkedListNode.new(99, node1)
 node3 = LinkedListNode.new(12, node2)
 
 print_values(node3)
 puts '---------------'
-revlist = reverse_list(node3)
-print_values(revlist)
+reverse_list(node3)
+print_values(node1)
+
+
+
+
